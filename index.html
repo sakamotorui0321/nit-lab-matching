@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>研究室マッチング診断 2026｜電気電子通信工学科</title>
+<style>
+:root{
+  --bg:#f4f7fb; --card:#ffffff; --ink:#16202b; --sub:#3d4a58;
+  --brand:#1769d1; --brand-d:#0f4f9e; --brand-l:#e8f1fd;
+  --accent:#ff8a3d; --line:#dfe6ee;
+  --shadow:0 6px 24px rgba(23,60,105,.10);
+  --radius:16px;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  font-family:"Hiragino Kaku Gothic ProN","Yu Gothic",YuGothic,"Meiryo",system-ui,sans-serif;
+  background:linear-gradient(180deg,#eaf2fc 0%,var(--bg) 320px);
+  color:var(--ink); line-height:1.75; font-size:17px; -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:24px 16px 64px}
+
+header{text-align:center;margin:8px 0 22px}
+header .eyebrow{font-size:14px;letter-spacing:.18em;color:var(--brand);font-weight:700}
+header h1{font-size:clamp(26px,6.2vw,38px);margin:6px 0 4px;letter-spacing:.02em}
+header p{margin:0;color:var(--sub);font-size:16px}
+
+.card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:26px 22px}
+@media(max-width:520px){.card{padding:20px 15px}}
+
+.progress{display:flex;align-items:center;gap:10px;margin-bottom:18px}
+.bar{flex:1;height:8px;background:#e6edf6;border-radius:99px;overflow:hidden}
+.bar>i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--brand),#4fa3ff);border-radius:99px;transition:width .35s ease}
+.pnum{font-size:14px;color:var(--sub);font-variant-numeric:tabular-nums;white-space:nowrap}
+
+.qhead{display:flex;gap:10px;align-items:flex-start;margin-bottom:18px}
+.qno{flex:none;width:40px;height:40px;border-radius:10px;background:var(--brand-l);color:var(--brand-d);
+     font-weight:800;display:grid;place-items:center;font-size:16px}
+.qtext{font-size:clamp(20px,4.9vw,26px);font-weight:700;line-height:1.5}
+.qnote{font-size:15px;color:var(--sub);margin-top:4px;font-weight:400}
+
+.opts{display:grid;gap:10px}
+.opt{
+  appearance:none;border:2px solid var(--line);background:#fff;border-radius:12px;
+  padding:17px 18px;text-align:left;font:inherit;color:var(--ink);cursor:pointer;
+  display:flex;align-items:center;gap:12px;transition:.15s;
+}
+.opt:hover{border-color:#9dc4f2;background:#f8fbff;transform:translateY(-1px)}
+.opt:active{transform:translateY(0)}
+.opt .dot{flex:none;width:22px;height:22px;border-radius:50%;border:2px solid #c6d3e2;position:relative}
+.opt.sel{border-color:var(--brand);background:var(--brand-l)}
+.opt.sel .dot{border-color:var(--brand);background:var(--brand)}
+.opt.sel .dot::after{content:"";position:absolute;inset:4px;background:#fff;border-radius:50%}
+.opt .lb{font-weight:600;font-size:18px}
+.opt .sm{font-size:14px;color:var(--sub);font-weight:400;margin-left:auto;text-align:right;white-space:nowrap}
+
+.nav{display:flex;justify-content:space-between;align-items:center;margin-top:20px;gap:12px}
+.btn{appearance:none;border:none;border-radius:99px;padding:14px 28px;font:inherit;font-size:17px;font-weight:700;cursor:pointer;transition:.15s}
+.btn.ghost{background:#eef3f9;color:var(--sub)}
+.btn.ghost:hover{background:#e3ebf5}
+.btn.main{background:var(--brand);color:#fff;box-shadow:0 4px 14px rgba(23,105,209,.28)}
+.btn.main:hover{background:var(--brand-d)}
+.btn[disabled]{opacity:.4;cursor:not-allowed}
+.btn.lg{width:100%;padding:17px;font-size:19px}
+
+.lead{font-size:17px;color:var(--sub);margin:0 0 18px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 22px}
+.chip{background:var(--brand-l);color:var(--brand-d);border-radius:99px;padding:5px 14px;font-size:14px;font-weight:700}
+.tiny{font-size:13px;color:#4d5a68;line-height:1.6}
+
+.rank{border:1px solid var(--line);border-radius:14px;padding:18px;margin-bottom:14px;background:#fff}
+.rank.top{border-color:#ffd0a8;background:linear-gradient(180deg,#fff8f1,#fff)}
+.rank .badge{display:inline-block;font-size:12.5px;font-weight:800;letter-spacing:.08em;
+  background:var(--brand);color:#fff;border-radius:99px;padding:2px 10px;margin-bottom:8px}
+.rank.top .badge{background:var(--accent)}
+.rank h3{margin:0 0 2px;font-size:23px}
+.rank .kw{font-size:16.5px;color:var(--brand-d);font-weight:700;margin-bottom:12px}
+.rank p{margin:0 0 10px;font-size:16px;color:#2c3844}
+.mbar{display:flex;align-items:center;gap:10px}
+.mbar .t{flex:1;height:10px;background:#eef2f7;border-radius:99px;overflow:hidden}
+.mbar .t>i{display:block;height:100%;background:linear-gradient(90deg,var(--brand),#7ab6ff);border-radius:99px;width:0;transition:width .8s ease}
+.rank.top .mbar .t>i{background:linear-gradient(90deg,#ff9a52,#ffc48a)}
+.mbar .v{font-size:15px;font-weight:800;color:var(--sub);font-variant-numeric:tabular-nums}
+.rank .meta{display:inline-flex;align-items:center;gap:6px;margin-top:11px;
+  font-size:18px;font-weight:800;letter-spacing:.01em;color:#16202b;
+  background:#eaf0f7;border:1px solid #d3dfec;border-radius:10px;padding:5px 12px}
+.rank.top .meta{background:#fff0e0;border-color:#ffd6ae}
+
+.note{background:#f7fafd;border-left:3px solid var(--brand);border-radius:8px;padding:14px 16px;font-size:15px;color:var(--sub);margin-top:18px}
+footer{text-align:center;font-size:13px;color:#5c6a79;margin-top:22px;line-height:1.8}
+.hidden{display:none!important}
+
+.res-head{text-align:center;margin-bottom:20px}
+.res-head .rh-eyebrow{color:var(--accent);font-size:13px;letter-spacing:.18em;font-weight:700}
+.res-head h2{margin:6px 0 2px;font-size:27px}
+.res-head p{margin:0;font-size:15px;color:var(--sub)}
+.mlabel{font-size:14px;color:var(--sub)}
+
+@media (max-width:600px), (max-height:560px){
+  html,body{height:100%}
+  body{font-size:16px;line-height:1.5;background:linear-gradient(180deg,#eaf2fc 0%,var(--bg) 220px)}
+  .wrap{min-height:100dvh;display:flex;flex-direction:column;justify-content:center;
+        padding:10px 10px 12px;max-width:none}
+
+  header{margin:0 0 8px}
+  header .eyebrow{font-size:10.5px;letter-spacing:.14em}
+  header h1{font-size:21px;margin:1px 0 0}
+  header p{display:none}
+  footer{display:none}
+
+  .card{padding:14px 12px;border-radius:14px}
+
+  .progress{margin-bottom:10px;gap:8px}
+  .bar{height:6px}
+  .pnum{font-size:12px}
+
+  .qhead{margin-bottom:10px;gap:8px}
+  .qno{width:30px;height:30px;border-radius:8px;font-size:13px}
+  .qtext{font-size:17px;line-height:1.32}
+  .qnote{font-size:12px;margin-top:3px;line-height:1.4}
+
+  .opts{gap:7px}
+  .opt{padding:11px 12px;gap:9px;border-radius:10px}
+  .opt .lb{font-size:15.5px}
+  .opt .sm{font-size:11.5px}
+  .opt .dot{width:18px;height:18px}
+  .opt.sel .dot::after{inset:3px}
+
+  .nav{margin-top:12px}
+  .btn{padding:10px 20px;font-size:15px}
+  .btn.lg{padding:14px;font-size:17px}
+
+  .lead{font-size:15px;margin:0 0 12px}
+  .chips{gap:6px;margin:10px 0 14px}
+  .chip{font-size:12px;padding:3px 10px}
+  .tiny{font-size:11.5px;line-height:1.45}
+  .card .tiny{margin-top:10px!important}
+
+  .res-head{margin-bottom:10px}
+  .res-head .rh-eyebrow{font-size:10.5px;letter-spacing:.14em}
+  .res-head h2{font-size:19px;margin:2px 0 1px}
+  .res-head p{font-size:12px}
+  .rank{padding:11px 12px;margin-bottom:8px;border-radius:11px}
+  .rank .badge{font-size:10.5px;padding:1px 8px;margin-bottom:4px}
+  .rank h3{font-size:17.5px;margin:0}
+  .rank .kw{font-size:12.5px;margin-bottom:7px;line-height:1.35}
+  .mbar{gap:8px}
+  .mbar .t{height:8px}
+  .mbar .v{font-size:12.5px}
+  .mlabel{font-size:11.5px}
+  .rank .meta{font-size:15.5px;margin-top:8px;padding:4px 10px;gap:5px}
+  .note{font-size:11.5px;padding:9px 10px;margin-top:10px;line-height:1.5}
+}
+
+@media (max-width:600px) and (max-height:620px){
+  .card{padding:11px 10px}
+  .res-head{margin-bottom:7px}
+  .res-head h2{font-size:17.5px}
+  .rank{padding:9px 10px;margin-bottom:5px}
+  .rank .badge{font-size:10px;margin-bottom:3px}
+  .rank h3{font-size:16.5px}
+  .rank .kw{font-size:11.5px;margin-bottom:5px}
+  .mbar .t{height:7px}
+  .rank .meta{font-size:14.5px;margin-top:6px;padding:3px 9px}
+  .qtext{font-size:16px}
+  .opt{padding:10px 11px}
+  .opt .lb{font-size:15px}
+}
+
+@media (max-height:560px) and (min-width:600px){
+  header{display:none}
+  .wrap{max-width:780px;padding:8px 10px}
+  .card{padding:12px 14px}
+  .progress{margin-bottom:8px}
+  .qhead{margin-bottom:8px}
+  .qtext{font-size:16px}
+  .qnote{font-size:11.5px}
+  .opts{grid-template-columns:1fr 1fr;gap:8px}
+  .opt{padding:10px 12px}
+  .opt .lb{font-size:15px}
+  .nav{margin-top:10px}
+  #res-list{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;align-items:start}
+  .rank{margin-bottom:0}
+  .res-head{margin-bottom:8px}
+  .res-head h2{font-size:17px}
+  .mbar{flex-wrap:wrap}
+  .rank .meta{font-size:14px;margin-top:7px;padding:3px 9px}
+}
+
+@media (max-width:600px) and (max-height:730px), (max-height:560px){
+  header .eyebrow{display:none}
+  header h1{font-size:19px}
+  #scr-res .note{display:none}
+  #scr-gpa .tiny{display:none}
+  .res-head p{display:none}
+  .res-head .rh-eyebrow{display:none}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div class="eyebrow">NIT 電気電子通信工学科 2026</div>
+  <h1>研究室マッチング診断</h1>
+  <p>11の質問に答えると、あなたに合いそうな研究室が見つかります</p>
+</header>
+
+<section id="scr-start" class="card">
+  <p class="lead">研究室配属をひかえた3年生向けの簡易シミュレーターです。<br>
+  直感でクリックしていくだけ、所要時間は約1分。</p>
+  <div class="chips">
+    <span class="chip">全12研究室</span><span class="chip">質問11問</span><span class="chip">4段階クリック</span><span class="chip">約1分</span>
+  </div>
+  <button class="btn main lg" onclick="start()">診断をはじめる</button>
+  <p class="tiny" style="margin-top:14px">※ 結果はあくまで参考です。最終的には研究室訪問・見学で自分の目で確かめてください。</p>
+</section>
+
+<section id="scr-q" class="card hidden">
+  <div class="progress">
+    <div class="bar"><i id="bar"></i></div>
+    <div class="pnum" id="pnum">Q1 / 11</div>
+  </div>
+  <div class="qhead">
+    <div class="qno" id="qno">Q1</div>
+    <div>
+      <div class="qtext" id="qtext"></div>
+      <div class="qnote" id="qnote"></div>
+    </div>
+  </div>
+  <div class="opts" id="opts"></div>
+  <div class="nav">
+    <button class="btn ghost" id="btn-back" onclick="back()">← もどる</button>
+    <button class="btn main" id="btn-next" onclick="next()">つぎへ →</button>
+  </div>
+</section>
+
+<section id="scr-gpa" class="card hidden">
+  <div class="progress">
+    <div class="bar"><i style="width:100%"></i></div>
+    <div class="pnum">最後の質問</div>
+  </div>
+  <div class="qhead">
+    <div class="qno">GPA</div>
+    <div>
+      <div class="qtext">現在のGPAはどのくらいですか？</div>
+      <div class="qnote">※ 任意です。答えずに「結果を見る」を押してもOK</div>
+    </div>
+  </div>
+  <div class="opts" id="gpa-opts"></div>
+  <div class="nav">
+    <button class="btn ghost" onclick="back()">← もどる</button>
+    <button class="btn main" onclick="finish()">結果を見る</button>
+  </div>
+  <p class="tiny" style="margin-top:14px">※ GPAは任意項目です。入力内容の保存・送信は一切行いません（すべてブラウザ内で計算しています）。</p>
+</section>
+
+<section id="scr-res" class="card hidden">
+  <div class="res-head">
+    <div class="rh-eyebrow">DIAGNOSIS RESULT</div>
+    <h2>あなたにおすすめの研究室</h2>
+    <p id="res-sub"></p>
+  </div>
+  <div id="res-list"></div>
+
+  <div class="note">
+    気になる研究室が見つかったら、まずは<b>見学・訪問</b>へ。どの研究室も「ちょっと気になる」段階からの訪問を歓迎しています。
+  </div>
+</section>
+
+<footer>
+  日本工業大学 基幹工学部 電気電子通信工学科<br>
+  研究室紹介2026 をもとに作成／結果は参考情報です
+</footer>
+</div>
+
+<script>
+
+const SCALE_INTEREST = [1.00, 0.60, 0.25, 0.00];
+const SCALE_SPECTRUM = [1.00, 0.50, -0.50, -1.00];
+
+const QUESTIONS = [
+  { id:'power',  type:'spectrum', text:'弱電派？ 強電派？',
+    note:'弱電＝通信・回路・信号処理／強電＝電力・エネルギー・電気機器',
+    labels:['がっつり弱電がいい','どちらかといえば弱電','どちらかといえば強電','がっつり強電がいい'],
+    sides:['弱電','弱電より','強電より','強電'], sign:-1 },
+  { id:'hwsw',   type:'spectrum', text:'ハードウェア派？ ソフトウェア派？',
+    note:'ハード＝実験・装置・基板づくり／ソフト＝プログラミング・データ解析',
+    labels:['がっつりハードウェア','どちらかといえばハードウェア','どちらかといえばソフトウェア','がっつりソフトウェア'],
+    sides:['ハード','ハードより','ソフトより','ソフト'] },
+  { id:'ai',     type:'interest', text:'AI・機械学習を使った研究がしたい',
+    note:'深層学習、画像認識、データからの推定・分類など' },
+  { id:'algo',   type:'interest', text:'アルゴリズムや数理モデルそのものを突き詰めたい',
+    note:'最適化アルゴリズム、性能の理論解析、非線形・カオスの解析など' },
+  { id:'sound',  type:'interest', text:'音や音楽を扱う研究がしたい',
+    note:'騒音を消す、混ざった音を分離する、音楽の自動採譜など' },
+  { id:'bio',    type:'interest', text:'人の体や状態を測る研究がしたい',
+    note:'脳波・筋電・心拍などの生体信号から心理や動作を推定するなど' },
+  { id:'grid',   type:'interest', text:'発電・送電など電力インフラを扱いたい',
+    note:'発電機の挙動、電力系統、再生可能エネルギーの系統連系など' },
+  { id:'robot',  type:'interest', text:'ドローンやロボットなど、実機を動かす研究がしたい',
+    note:'自律飛行、群ロボット、自走ロボット、モータ制御など' },
+  { id:'social', type:'interest', text:'情報技術で社会の課題を解決したい',
+    note:'スマート農業、省エネ、安全運転支援、通信インフラなど' },
+  { id:'outside',type:'interest', text:'学会発表や他大学との交流など、学外に出る活動をしたい',
+    note:'全国の学会での発表、懇親会での交流、企業や他機関との共同研究' },
+  { id:'grad',   type:'interest', text:'大学院への進学に興味がある',
+    note:'学部の4年間より深く研究したい／修士・博士まで進みたい' },
+];
+
+const INTEREST_LABELS = ['とても興味がある','すこし興味がある','あまり興味はない','興味はない'];
+
+const LABS = [
+  { key:'hiraguri', name:'平栗研究室', kw:'無線通信 × スマート農業（AgriComm）',
+    desc:'B5G/6G・Wi-Fi・IoTの無線通信と農業を融合。ドローンを通信インフラとして使う災害時の情報収集・物流、AI分類器によるドローン自動受粉、デジタルツイン植物工場、月面農場（JAXAと共同研究）など。「研究で終わらせない」実装型のラボで、電子情報通信学会と園芸学会の両方で国内外に発表しています。',
+    place:'9号館3階 305室',
+    w:{ power:-7, hwsw:2, ai:7, algo:3, sound:1, bio:2, grid:1, robot:10, social:10, outside:10, grad:9 } },
+
+  { key:'takanezawa', name:'髙根沢研究室', kw:'電気機器・モデリング・機構デバイス',
+    desc:'系統事故などの過渡現象時に発電機がどう振る舞うかを、タービンとの機械連成まで含めて推定する研究と、回転体・移動体に電力や信号を確実に送る電気摺動接触機構（電気鉄道のパンタグラフなど）の信頼性研究。EVやドローンなど新分野への応用も狙う実学重視の研究室で、企業との共同研究やイベントも活発です。',
+    place:'9号館2階 217室',
+    w:{ power:10, hwsw:8, ai:1, algo:6, sound:0, bio:0, grid:10, robot:2, social:4, outside:10, grad:7 } },
+
+  { key:'ueno', name:'上野研究室', kw:'電気機器・マイコン制御・EVカート',
+    desc:'ブラシ・整流子・スリップリング機構を主軸に、モータや発電機の電流通電機構の信頼性向上と長寿命化を追究。摺動試験機での実験と有限要素法による接触通電シミュレーションを併用します。ドローンの自動自律飛行に挑むマイコン制御のテーマもあり、EVカートでのレース参戦や企業との共同研究、学生主体のイベントも充実。',
+    place:'9号館1階 110室',
+    w:{ power:9, hwsw:8, ai:2, algo:2, sound:0, bio:0, grid:2, robot:7, social:5, outside:9, grad:7 } },
+
+  { key:'takemoto', name:'竹本研究室', kw:'電力システム・再生可能エネルギー',
+    desc:'環境に配慮した安定的な電力システムの構築を目指し、地域特性に応じた分散電源システムやスマートグリッド、小水力・太陽光・風力の系統連系時の電力品質評価を研究。電力系統解析シミュレータとスケールダウンした模擬分散系統で検証し、電熱併給型の太陽光パネル開発も行っています。',
+    place:'9号館1階 117室',
+    w:{ power:9, hwsw:4, ai:2, algo:3, sound:0, bio:1, grid:10, robot:0, social:8, outside:3, grad:4 } },
+
+  { key:'shimizu', name:'清水研究室', kw:'高電圧・電気絶縁',
+    desc:'電気絶縁の高信頼化を中核に、放電による材料劣化（耐トラッキング性・耐エロージョン性）の評価と劣化メカニズムの解明、雷インパルスのような急峻な電圧・電流波形の高精度測定技術を研究。高電圧を利用した害虫防除（工学×農業）も手がけ、高電圧試験やセンサとPython/MATLAB/FEM解析を横断します。',
+    place:'9号館1階 119室',
+    w:{ power:10, hwsw:8, ai:2, algo:3, sound:0, bio:1, grid:5, robot:1, social:6, outside:5, grad:5 } },
+
+  { key:'uchino', name:'内野研究室', kw:'パワーエレクトロニクス・電源回路',
+    desc:'スイッチで回路方程式が切り替わる電源回路を「合成力学系」として捉え、パラメータ変化で不安定化する分岐現象を解析。カオス制御によって不安定な電流・電圧波形を安定化させる手法をマイコンに実装し、小型・低コスト・高効率な電源回路や車載排熱発電システムの開発につなげます。',
+    place:'9号館4階 401室',
+    w:{ power:6, hwsw:7, ai:2, algo:6, sound:0, bio:0, grid:3, robot:2, social:5, outside:8, grad:5 } },
+
+  { key:'shindo', name:'進藤研究室', kw:'群知能・メタヒューリスティクス（最適化）',
+    desc:'鳥や魚、アリのような群れの振る舞いを工学に応用する「群知能」の研究室。粒子群最適化（PSO）や蟻コロニー最適化（ACO）などの発見的アルゴリズムの解析・性能向上、時間変化する制御パラメータの最適化、さらに群れの動きを実機で確かめる小型群ロボットの開発まで扱います。',
+    place:'9号館3階 309B室',
+    w:{ power:-6, hwsw:-7, ai:4, algo:10, sound:0, bio:1, grid:0, robot:6, social:4, outside:5, grad:4 } },
+
+  { key:'ohara', name:'小原研究室', kw:'非線形工学・カオス・光コンピューティング',
+    desc:'カオスなどの非線形ダイナミクスの解析と、その複雑さを積極的に活かす研究。光デバイスをリザバーに用いた光リザバーコンピューティング（超高速・多重化が可能な軽量な機械学習）、物理乱数や暗号による情報セキュリティ、生体信号の情報処理まで扱います。今年が1期生の立ち上げメンバー募集中。',
+    place:'9号館2階 205室',
+    w:{ power:-7, hwsw:-7, ai:10, algo:10, sound:1, bio:7, grid:0, robot:0, social:4, outside:4, grad:4 } },
+
+  { key:'kimoto', name:'木許研究室', kw:'ディジタル信号処理（音・画像）',
+    desc:'適応信号処理を基盤に、音響通信系のノイズやエコーをリアルタイムに除去する適応キャンセラ、混ざった音声を分離するブラインド音源分離（粒子群最適化を応用し少ない演算量で実時間処理）、指向性の高いパラメトリックスピーカによる消音点の移動制御、電子透かしによる改ざん検知を研究。1人ずつ専用デスクとMacBookが用意された環境です。',
+    place:'9号館2階 209A室',
+    w:{ power:-9, hwsw:-6, ai:6, algo:7, sound:10, bio:1, grid:0, robot:1, social:6, outside:7, grad:9 } },
+
+  { key:'ota', name:'大田研究室', kw:'マルチメディア信号処理（音声・音楽・生体）',
+    desc:'音声・音楽・生体を対象とした信号処理。複数の楽器が混ざった音楽からの自動採譜（多重音の音高推定・テンポ解析・音源分離）や、脳波・筋電・心拍などの生体情報から心理状態や身体動作を推定する研究に取り組みます。産業技術総合研究所との共同研究もあり、自分でテーマを提案することも可能です。',
+    place:'9号館1階 111室',
+    w:{ power:-8, hwsw:-3, ai:10, algo:3, sound:9, bio:8, grid:0, robot:2, social:6, outside:5, grad:8 } },
+
+  { key:'sato', name:'佐藤研究室', kw:'計測物理・宇宙観測',
+    desc:'望遠鏡の観測データから太陽系外惑星・銀河・ブラックホールに挑む観測天文学の研究室。重力マイクロレンズによる系外惑星探査、銀河特性の統計調査や変光星による年齢分布推定、高感度・低雑音・高分解能な観測装置の開発まで。統計推定・物理モデル・情報処理を組み合わせた解析が特徴で、NASA・JAXA・大阪大学の研究者と協力しています。',
+    place:'9号館2階 214室',
+    w:{ power:-6, hwsw:2, ai:7, algo:6, sound:0, bio:0, grid:0, robot:3, social:3, outside:7, grad:4 } },
+
+  { key:'ikoma', name:'生駒研究室', kw:'計算知能システム（AI・画像処理・センサ融合）',
+    desc:'人とコンピュータが協調して安全・安心な生活をつくることを目指す研究室。運転者の挙動・意図を考慮した安全運転支援、動く被写体の顔や全身をリアルタイムに加工する画像処理・仮想試着、IoT環境で複数センサの情報を融合してシーンを認識する研究など。運転シミュレータや全方位・深度カメラ、自走ロボットを備えます。',
+    place:'9号館3階 307室',
+    w:{ power:-6, hwsw:-6, ai:8, algo:5, sound:0, bio:6, grid:0, robot:6, social:5, outside:3, grad:6 } },
+];
+
+const GPA_OPTIONS = [
+  { id:'g30',  label:'3.0 以上',  rule:{ target:'hiraguri', prob:1.00, bonus:0.59, pinRank:null } },
+  { id:'g25',  label:'2.5 以上',  rule:{ target:'hiraguri', prob:1.00, bonus:0.15, pinRank:null } },
+  { id:'g20',  label:'2.0 以上',  rule:null },
+  { id:'g10',  label:'1.0 以上',  rule:null },
+];
+
+const NORMALIZE_BY_LAB = true;
+
+const SHOW_TOP  = 3;
+const MATCH_MAX = 98;
+const MATCH_MIN = 55;
+
+let qi = 0;
+const answers = new Array(QUESTIONS.length).fill(null);
+let gpaAnswer = null;
+
+const $ = id => document.getElementById(id);
+const show = id => {
+  ['scr-start','scr-q','scr-gpa','scr-res'].forEach(s => $(s).classList.add('hidden'));
+  $(id).classList.remove('hidden');
+  window.scrollTo({top:0,behavior:'smooth'});
+};
+
+function start(){ qi = 0; renderQ(); show('scr-q'); }
+
+function renderQ(){
+  const q = QUESTIONS[qi];
+  $('pnum').textContent = 'Q' + (qi+1) + ' / ' + QUESTIONS.length;
+  $('bar').style.width = (qi / QUESTIONS.length * 100) + '%';
+  $('qno').textContent = 'Q' + (qi+1);
+  $('qtext').textContent = q.text;
+  $('qnote').textContent = q.note || '';
+  const labels = q.type === 'spectrum' ? q.labels : INTEREST_LABELS;
+  const box = $('opts'); box.innerHTML = '';
+  labels.forEach((lb,i) => {
+    const b = document.createElement('button');
+    b.className = 'opt' + (answers[qi] === i ? ' sel' : '');
+    b.innerHTML = '<span class="dot"></span><span class="lb">' + lb + '</span>' +
+                  (q.sides ? '<span class="sm">' + q.sides[i] + '</span>' : '');
+    b.onclick = () => pick(i);
+    box.appendChild(b);
+  });
+  $('btn-back').style.visibility = qi === 0 ? 'hidden' : 'visible';
+  $('btn-next').disabled = answers[qi] === null;
+}
+
+function pick(i){
+  answers[qi] = i;
+  [...$('opts').children].forEach((el,k) => el.classList.toggle('sel', k === i));
+  $('btn-next').disabled = false;
+}
+
+function next(){
+  if(answers[qi] === null) return;
+  if(qi < QUESTIONS.length - 1){ qi++; renderQ(); }
+  else renderGpa();
+}
+
+function back(){
+  if(!$('scr-gpa').classList.contains('hidden')){ renderQ(); show('scr-q'); return; }
+  if(qi > 0){ qi--; renderQ(); }
+}
+
+function renderGpa(){
+  const box = $('gpa-opts'); box.innerHTML = '';
+  GPA_OPTIONS.forEach(o => {
+    const b = document.createElement('button');
+    b.className = 'opt' + (gpaAnswer === o.id ? ' sel' : '');
+    b.innerHTML = '<span class="dot"></span><span class="lb">' + o.label + '</span>' +
+                  (o.sm ? '<span class="sm">' + o.sm + '</span>' : '');
+    b.onclick = () => {
+      gpaAnswer = o.id;
+      [...box.children].forEach(el => el.classList.remove('sel'));
+      b.classList.add('sel');
+    };
+    box.appendChild(b);
+  });
+  show('scr-gpa');
+}
+
+const LAB_NORM = {};
+LABS.forEach(lab => {
+  LAB_NORM[lab.key] = Math.sqrt(
+    QUESTIONS.reduce((s,q) => s + Math.pow(lab.w[q.id] || 0, 2), 0)
+  ) || 1;
+});
+
+function scoreLabs(){
+  return LABS.map(lab => {
+    let s = 0;
+    QUESTIONS.forEach((q,i) => {
+      const a = answers[i];
+      if(a === null) return;
+      const v = q.type === 'spectrum'
+                  ? SCALE_SPECTRUM[a] * (q.sign === undefined ? 1 : q.sign)
+                  : SCALE_INTEREST[a];
+      s += (lab.w[q.id] || 0) * v;
+    });
+    if(NORMALIZE_BY_LAB) s = s / LAB_NORM[lab.key];
+    return { lab:lab, raw:s };
+  }).sort((a,b) => b.raw - a.raw);
+}
+
+function toMatch(list){
+  const mx = list[0].raw, mn = list[list.length-1].raw;
+  const span = (mx - mn) || 1;
+  list.forEach(r => r.match = Math.round(MATCH_MIN + (MATCH_MAX - MATCH_MIN) * (r.raw - mn) / span));
+  return list;
+}
+
+function applyGpaRule(list){
+  const opt = GPA_OPTIONS.find(o => o.id === gpaAnswer);
+  if(!opt || !opt.rule) return list;
+  const r = opt.rule;
+  if(Math.random() >= (r.prob === undefined ? 1 : r.prob)) return list;
+  const t = list.find(x => x.lab.key === r.target);
+  if(!t) return list;
+  t.raw += (r.bonus || 0);
+  list.sort((a,b) => b.raw - a.raw);
+  if(r.pinRank){
+    const idx = list.indexOf(t);
+    list.splice(idx,1);
+    list.splice(Math.max(0, r.pinRank - 1), 0, t);
+  }
+  return list;
+}
+
+function finish(){
+  let list = applyGpaRule(scoreLabs());
+  list = toMatch(list);
+
+  for(let i = 1; i < list.length; i++){
+    if(list[i].match > list[i-1].match) list[i].match = list[i-1].match - 1;
+  }
+
+  const top = list.slice(0, SHOW_TOP);
+  $('res-sub').textContent = '11の回答から相性の良い順に表示しています';
+
+  $('res-list').innerHTML = top.map((r,i) =>
+    '<div class="rank' + (i === 0 ? ' top' : '') + '">' +
+      '<span class="badge">' + (i === 0 ? '★ BEST MATCH' : '第' + (i+1) + '位') + '</span>' +
+      '<h3>' + r.lab.name + '</h3>' +
+      '<div class="kw">' + r.lab.kw + '</div>' +
+      '<div class="mbar"><span class="mlabel">マッチ度</span>' +
+        '<span class="t"><i data-w="' + r.match + '"></i></span><span class="v">' + r.match + '%</span></div>' +
+      (r.lab.place && r.lab.place !== '—' ? '<div class="meta">📍 ' + r.lab.place + '</div>' : '') +
+    '</div>').join('');
+
+  show('scr-res');
+  requestAnimationFrame(() => {
+    document.querySelectorAll('.mbar .t>i').forEach(el => { el.style.width = el.dataset.w + '%'; });
+  });
+}
+</script>
+</body>
+</html>
