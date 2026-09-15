@@ -214,7 +214,7 @@ footer{text-align:center;font-size:13px;color:#5c6a79;margin-top:22px;line-heigh
     <span class="chip">全12研究室</span><span class="chip">質問11問</span><span class="chip">4段階クリック</span><span class="chip">約1分</span>
   </div>
   <button class="btn main lg" onclick="start()">診断をはじめる</button>
-  <p class="tiny" style="margin-top:14px">※ 結果はあくまで参考です。最終的には研究室訪問・見学で自分の目で確かめてください。</p>
+  <p class="tiny" style="margin-top:14px">※ 結果はあくまで参考です。最終的には研究室訪問・見学で自分の目で確かめてください。<br>※ 回答内容は匿名で集計に利用します（氏名・学籍番号は取得しません）。</p>
 </section>
 
 <section id="scr-q" class="card hidden">
@@ -253,7 +253,7 @@ footer{text-align:center;font-size:13px;color:#5c6a79;margin-top:22px;line-heigh
     <button class="btn ghost" onclick="back()">← もどる</button>
     <button class="btn main" onclick="finish()">結果を見る</button>
   </div>
-  <p class="tiny" style="margin-top:14px">※ GPAは任意項目です。入力内容の保存・送信は一切行いません（すべてブラウザ内で計算しています）。</p>
+  <p class="tiny" style="margin-top:14px">※ GPAは任意項目です。回答内容は氏名などを含まない形で集計にのみ利用します（個人は特定しません）。</p>
 </section>
 
 <section id="scr-res" class="card hidden">
@@ -380,6 +380,8 @@ const GPA_OPTIONS = [
   { id:'g10',  label:'1.0 以上',  rule:null },
 ];
 
+const LOG_ENDPOINT = '';
+
 const NORMALIZE_BY_LAB = true;
 
 const SHOW_TOP  = 3;
@@ -501,6 +503,47 @@ function applyGpaRule(list){
   return list;
 }
 
+function clientId(){
+  try{
+    let id = localStorage.getItem('labsim_uid');
+    if(!id){
+      id = (crypto.randomUUID ? crypto.randomUUID()
+            : 'x' + Date.now().toString(36) + Math.random().toString(36).slice(2,10));
+      localStorage.setItem('labsim_uid', id);
+    }
+    return id;
+  }catch(e){ return 'nostorage-' + Math.random().toString(36).slice(2,10); }
+}
+function attemptCount(){
+  try{
+    const n = (parseInt(localStorage.getItem('labsim_n') || '0', 10) || 0) + 1;
+    localStorage.setItem('labsim_n', String(n));
+    return n;
+  }catch(e){ return 1; }
+}
+let logSent = false;
+function sendLog(list){
+  if(!LOG_ENDPOINT || logSent) return;
+  logSent = true;
+  try{
+    const payload = {
+      uid: clientId(),
+      attempt: attemptCount(),
+      ts: new Date().toISOString(),
+      answers: answers.slice(),
+      gpa: gpaAnswer || '',
+      top: list.slice(0,3).map(r => ({ lab:r.lab.name, match:r.match })),
+      order: list.map(r => r.lab.key),
+      device: (window.innerWidth < 600 ? 'mobile' : 'desktop')
+    };
+    fetch(LOG_ENDPOINT, {
+      method:'POST', mode:'no-cors', keepalive:true,
+      headers:{'Content-Type':'text/plain;charset=utf-8'},
+      body: JSON.stringify(payload)
+    }).catch(function(){});
+  }catch(e){}
+}
+
 function finish(){
   let list = applyGpaRule(scoreLabs());
   list = toMatch(list);
@@ -526,6 +569,7 @@ function finish(){
   requestAnimationFrame(() => {
     document.querySelectorAll('.mbar .t>i').forEach(el => { el.style.width = el.dataset.w + '%'; });
   });
+  sendLog(list);
 }
 </script>
 </body>
