@@ -8,7 +8,15 @@
 
 ## 公開URL
 
-GitHub Pages で公開しています（Settings → Pages で有効化）。
+[研究室マッチング診断 2026 を開く](https://sakamotorui0321.github.io/nit-lab-matching/)
+
+リンク用URL（コピーして共有できます）：
+
+```text
+https://sakamotorui0321.github.io/nit-lab-matching/
+```
+
+GitHub Pages で公開しています。
 
 ## 出典
 
